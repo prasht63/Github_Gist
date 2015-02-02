@@ -1,173 +1,45 @@
 <html>
 <head>
 <title>Project</title>
-<script>
-    function ourFunction()
-    {  
-        var results,request;
-      var pagerequested=document.getElementById('text_input').value;
-	  if(document.getElementById('text_input').value==""){pagerequested=1;}
-	  if(pagerequested >5) {alert("Page out of range");return 0;}
-        console.log("Page requested is" + pagerequested);
-        if (window.XMLHttpRequest)
-        {
-            request=new XMLHttpRequest(); //this will work for chrome and  other browser
-        }
-        else
-        {
-            alert("Please use a newer browser.Preferably greater than I.E 6")
-        }
-        request.onreadystatechange=function()
-        {
-        if(request.readyState==4 && request.status==200)
-            {
-				result=request.responseText;
-				result=JSON.parse(result);
-			        for(var i=0; i<result.length; i++)
-				{   var names = Object.keys( result[i].files );
-					if(document.getElementsByName("language")[0].checked)
-					{	if(result[i].files[names[0]].language=="JavaScript")
-						{
-						if(isFavourited(result[i].id))
-						{
-						document.getElementById("favourites").innerHTML=document.getElementById("favourites").innerHTML+"<a href="+result[i].html_url+">"+result[i].description+"</a><input type=button value=Remove onClick=removeFavourite("+"'"+result[i].id+"'"+")><br>";
-						}
-						else
-						{
-						document.getElementById("output").innerHTML=document.getElementById("output").innerHTML+"<a href="+result[i].html_url+">"+result[i].description+"</a><input type=button value=Add to Favourites onClick=addtoFavourite("+"'"+result[i].id+"'"+")><br>";
-						}
-						}
-					}
-					if(document.getElementsByName("language")[1].checked)
-					{	if(result[i].files[names[0]].language=="C++")
-						{
-						if(isFavourited(result[i].id))
-						{
-						document.getElementById("favourites").innerHTML=document.getElementById("favourites").innerHTML+"<a href="+result[i].html_url+">"+result[i].description+"</a><input type=button value=Remove onClick=removeFavourite("+"'"+result[i].id+"'"+")><br>";
-						}
-						else
-						{
-						document.getElementById("output").innerHTML=document.getElementById("output").innerHTML+"<a href="+result[i].html_url+">"+result[i].description+"</a><input type=button value=Add to Favourites onClick=addtoFavourite("+"'"+result[i].id+"'"+")><br>";
-						}
-						}
-					}
-					if(document.getElementsByName("language")[2].checked)
-					{	if(result[i].files[names[0]].language=="SQL")
-						{
-						if(isFavourited(result[i].id))
-						{
-						document.getElementById("favourites").innerHTML=document.getElementById("favourites").innerHTML+"<a href="+result[i].html_url+">"+result[i].description+"</a><input type=button value=Remove onClick=removeFavourite("+"'"+result[i].id+"'"+")><br>";
-						}
-						else
-						{
-						document.getElementById("output").innerHTML=document.getElementById("out").innerHTML+"<a href="+result[i].html_url+">"+result[i].description+"</a><input type=button value=Add to Favourites onClick=addtoFavourite("+"'"+result[i].id+"'"+")><br>";
-						}
-						}
-					}
-					if(document.getElementsByName("language")[0].checked)
-					{	if(result[i].files[names[0]].language=="Python")
-						{
-						if(isFavourited(result[i].id))
-						{
-						document.getElementById("favourites").innerHTML=document.getElementById("favourites").innerHTML+"<a href="+result[i].html_url+">"+result[i].description+"</a><input type=button value=Remove onClick=removeFavourite("+"'"+result[i].id+"'"+")><br>";
-						}
-						else
-						{
-						document.getElementById("output").innerHTML=document.getElementById("output").innerHTML+"<a href="+result[i].html_url+">"+result[i].description+"</a><input type=button value=Add to Favourites onClick=addtoFavourite("+"'"+result[i].id+"'"+")><br>";
-						}
-						}
-					}
-					if(!document.getElementsByName("language")[0].checked && !document.getElementsByName("language")[1].checked &&  !document.getElementsByName("language")[2].checked &&  !document.getElementsByName("language")[3].checked)
-					{
-					if(isFavourited(result[i].id))
-						{
-						document.getElementById("favourites").innerHTML=document.getElementById("favourites").innerHTML+"<a href="+result[i].html_url+">"+result[i].description+"</a><input type=button value=Remove onClick=removeFavourite("+"'"+result[i].id+"'"+")><br>";
-						}
-						else
-						{
-						document.getElementById("output").innerHTML=document.getElementById("output").innerHTML+"<a href="+result[i].html_url+">"+result[i].description+"</a><input type=button value=Add  onClick=addtoFavourite("+"'"+result[i].id+"'"+")></input><br>";
-						}
-					}
-                    
-				}
-                
-            }   
-        }
-		
-		for(i=pagerequested;i>0;i--)
-		{
-		console.log(i);
-        request.open("GET","https://api.github.com/gists?page="+i+"",true);
-        request.send();
-		}
-    }    
-	function isFavourited(id)
-	{
-	var name=id;
-	
-	return readCookie(name);
-	}
-	function addtoFavourite(id)
-	{
-	 var name=id;
-	 createCookie(id,id,7);
-	 
-	}
-	function removeFavourite(id)
-	{
-	var name=id;
-	console.log("getting called");
-	eraseCookie(name,"",-1);
-	
-	}
-	
-	function createCookie(name,value,days) {
-	if (days) {
-		var date = new Date();
-		date.setTime(date.getTime()+(days*24*60*60*1000));
-		var expires = "; expires="+date.toGMTString();
-	}
-	else var expires = "";
-	document.cookie = name+"="+value+expires+"; path=/";
-	console.log(document.cookie);
-}
-
-function readCookie(name) {
-	var nameEQ = name + "=";
-	var ca = document.cookie.split(';');
-	for(var i=0;i < ca.length;i++) {
-		var c = ca[i];
-		while (c.charAt(0)==' ') c = c.substring(1,c.length);
-		if (c.indexOf(nameEQ) == 0) {return 1; }
-		
-	}
-	return null;
-}
-
-function eraseCookie(name) {
-	createCookie(name,"",-1);
-}
-</script>
-
+<script type='text/javascript' src='main.js'></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </head>
 <body>
+<nav class="navbar navbar-default"   style="background-color:#337ab7;>
+  <div class="container-fluid">
+    <div class="navbar-header" >
+      <a class="navbar-brand" style="color: #fff" href="#">Github Gist API Example</a>
+    </div>
+    <div>
+	  <ul class="nav navbar-nav" style="color: #fff">
+        <li class="active" style="color: #fff"><a href="#">Home</a></li>
+        <li><a href="#" style="color: #fff">Documentation</a></li>
+        <li><a href="#" style="color: #fff">Github Gist API v3 Documentation</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 <div id="container">
-    <div id="user-input">
-        <form>
-            <input type = "text" id="text_input"/>
-            <label for =text_input>Number of Pages to return(30 Results per page)</label>
-            <br>
-            <input type = "checkbox" name="language" value= "Javascript"> Javascript
-            <input type = "checkbox" name="language" value= "C++"> C++
-            <input type = "checkbox" name="language" value= "SQL"> SQL
-            <input type = "checkbox" name="language" value= "Python"> Python
-            <br>
-            <input type = "button" value= "Search" onClick=ourFunction()>
-        </form>
-        
+  <form class="form-inline" role="form">
+   <div class="form-group">
+    <label for="text_input">Select Languages to display Gists for</label>
+   </div>
+    <div class="checkbox">
+       <input type = "checkbox" name="language" value= "Javascript"> Javascript
+       <input type = "checkbox" name="language" value= "C++"> C++
+       <input type = "checkbox" name="language" value= "SQL"> SQL
+       <input type = "checkbox" name="language" value= "Python"> Python
+    </div>
+	   <button type="button" class="btn btn-default" onClick=callback() >Submit</button>
+   </form>
+</div>
     </div>
     <div id="output"></div>
-	<h3>Favourites</h3>
+	
 	<div id="favourites"></div>
 </div>
 </body>
